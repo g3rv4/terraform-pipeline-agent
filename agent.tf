@@ -80,8 +80,6 @@ resource "google_compute_instance" "default" {
       "cd ~/agent",
       "sudo ./svc.sh stop",
       "sudo ./svc.sh uninstall",
-      "export VSTS_AGENT_INPUT_TOKEN=${var.pipelines_agent_pat}",
-      "./config.sh remove --url https://dev.azure.com/${var.pipelines_org} --auth pat --pool ${var.pipelines_pool_name} --agent ${var.agent_name}",
     ]
   }
 }
