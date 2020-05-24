@@ -58,8 +58,14 @@ resource "google_compute_instance" "default" {
       "echo \"* * * * * agent $HOME/.dotnet/tools/PipelinesAgentManager destroy -m 20 >> $HOME/PipelinesAgentManagerDestroy.log 2>&1\" | sudo tee /etc/cron.d/PipelinesAgentManager",
       "echo \"* * * * * agent $HOME/.dotnet/tools/PipelinesAgentManager applyIfNeeded >> $HOME/PipelinesAgentManagerApply.log 2>&1\" | sudo tee -a /etc/cron.d/PipelinesAgentManager",
 
-      # run the actual agent
+      # install the latest agent
+      "mkdir agent",
       "cd agent",
+      "export AGENT_VERSION=`pwsh -Command '((irm https://api.github.com/repos/microsoft/azure-pipelines-agent/releases).tag_name | Select-Object -First 1).Substring(1)'`",
+      "wget https://vstsagentpackage.azureedge.net/agent/$AGENT_VERSION/vsts-agent-linux-x64-$AGENT_VERSION.tar.gz",
+      "tar zxf vsts-agent-linux-x64-$AGENT_VERSION.tar.gz",
+
+      # run the actual agent
       "export VSTS_AGENT_INPUT_TOKEN=${var.pipelines_agent_pat}",
       "./config.sh --unattended --acceptTeeEula --replace --url https://dev.azure.com/${var.pipelines_org} --auth pat --pool ${var.pipelines_pool_name} --agent ${var.agent_name}",
       "sudo ./svc.sh install",
