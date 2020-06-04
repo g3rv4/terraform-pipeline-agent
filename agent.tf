@@ -55,7 +55,7 @@ resource "google_compute_instance" "default" {
 
       # install it and add the destroy to the cron
       "dotnet tool install --global PipelinesAgentManager.Cli",
-      "echo \"* * * * * agent $HOME/.dotnet/tools/PipelinesAgentManager destroy -m 20 >> $HOME/PipelinesAgentManagerDestroy.log 2>&1\" | sudo tee /etc/cron.d/PipelinesAgentManager",
+      "echo \"* * * * * agent $HOME/.dotnet/tools/PipelinesAgentManager destroy -m 20 -f $HOME/.PipelinesAgentManager >> $HOME/PipelinesAgentManagerDestroy.log 2>&1\" | sudo tee /etc/cron.d/PipelinesAgentManager",
       "echo \"* * * * * agent $HOME/.dotnet/tools/PipelinesAgentManager applyIfNeeded >> $HOME/PipelinesAgentManagerApply.log 2>&1\" | sudo tee -a /etc/cron.d/PipelinesAgentManager",
 
       # install the latest agent
